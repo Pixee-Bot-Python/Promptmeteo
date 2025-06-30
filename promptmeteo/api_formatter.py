@@ -180,7 +180,7 @@ class APIFormatter(BaseUnsupervised):
         _api_codes = deepcopy(api_codes)
 
         _api_codes = [
-            yaml.load(api, Loader=yaml.FullLoader) for api in _api_codes
+            yaml.load(api, Loader=yaml.SafeLoader) for api in _api_codes
         ]
 
         self._entities = {
@@ -313,18 +313,18 @@ class APIFormatter(BaseUnsupervised):
         """
 
         # Replace entities
-        api = yaml.load(api, Loader=yaml.FullLoader)
+        api = yaml.load(api, Loader=yaml.SafeLoader)
         for entity in api.get("components", {}).get("schemas", {}).keys():
             if entity in self._entities:
                 api["components"]["schemas"][entity] = yaml.load(
-                    self._entities[entity], Loader=yaml.FullLoader
+                    self._entities[entity], Loader=yaml.SafeLoader
                 )
 
         # Replace parameters
         for parameter in api.get("components", {}).get("parameters", {}).keys():
             if parameter in self._parameters:
                 api["components"]["parameters"][parameter] = yaml.load(
-                    self._parameters[parameter], Loader=yaml.FullLoader
+                    self._parameters[parameter], Loader=yaml.SafeLoader
                 )
 
         # Complete entities
@@ -347,7 +347,7 @@ class APIFormatter(BaseUnsupervised):
 
                 api["components"]["schemas"][ntt] = yaml.load(
                     self._entities.get(ntt, default_ntt),
-                    Loader=yaml.FullLoader,
+                    Loader=yaml.SafeLoader,
                 )
 
         # Complete parameters
@@ -373,7 +373,7 @@ class APIFormatter(BaseUnsupervised):
 
                 api["components"]["parameters"][par] = yaml.load(
                     self._entities.get(par, default_par),
-                    Loader=yaml.FullLoader,
+                    Loader=yaml.SafeLoader,
                 )
 
         api = yaml.dump(api, default_flow_style=False, sort_keys=False)
@@ -410,7 +410,7 @@ class APIFormatter(BaseUnsupervised):
 
             return orig_dict
 
-        api = yaml.load(api, Loader=yaml.FullLoader)
+        api = yaml.load(api, Loader=yaml.SafeLoader)
         api = yaml.dump(
             replace_values(api, replacements),
             default_flow_style=False,

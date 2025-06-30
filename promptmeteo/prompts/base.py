@@ -128,7 +128,7 @@ class BasePrompt(ABC):
         """
 
         try:
-            prompt = yaml.load(prompt_text, Loader=yaml.FullLoader)
+            prompt = yaml.load(prompt_text, Loader=yaml.SafeLoader)
 
         except Exception as error:
             raise ValueError(
@@ -152,7 +152,7 @@ class BasePrompt(ABC):
         except Exception as error:
             raise ValueError(
                 f"`{cls.__name__}` error `read_prompt()`. The expected keys "
-                f"are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.FullLoader)}"
+                f"are {yaml.load(cls.PROMPT_EXAMPLE, Loader=yaml.SafeLoader)}"
             ) from error
 
     def run(
