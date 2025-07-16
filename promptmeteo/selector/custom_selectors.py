@@ -1,12 +1,12 @@
 """Custom selectors"""
 
 from typing import Any, Dict, List, Optional, Type
-import random
 from langchain_core.example_selectors.base import BaseExampleSelector
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.vectorstores import VectorStore
 from langchain_core.embeddings import Embeddings
 from math import ceil
+import secrets
 
 
 def sorted_values(values: Dict[str, str]) -> List[Any]:
@@ -110,7 +110,7 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
         """Select which examples to use based on semantic similarity."""
         final_examples = []
         new_class_list = self.class_list.copy()
-        random.shuffle(new_class_list)
+        secrets.SystemRandom().shuffle(new_class_list)
         new_class_list = (
             self.class_list * ceil(self.k / len(set(self.class_list)))
         )[: self.k]
@@ -141,5 +141,5 @@ class BalancedSemanticSamplesSelector(BaseExampleSelector, BaseModel):
                 ]
             final_examples = final_examples + examples
 
-        random.shuffle(final_examples)
+        secrets.SystemRandom().shuffle(final_examples)
         return final_examples
